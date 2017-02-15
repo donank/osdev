@@ -73,10 +73,10 @@ void terminal_setcolor(uint8_t color) {
 	terminal_color = color;
 }
 
-void terminal_scroll(const char* data){
+void terminal_scroll(){
     for(size_t i = 0; i < VGA_HEIGHT; i++){
         for (size_t m = 0; m < VGA_WIDTH; m++){
-            terminal_buffer[i * VGA_WIDTH + m] = terminal_buffer[(i + strlen(data)) * VGA_WIDTH + m];
+            terminal_buffer[i * VGA_WIDTH + m] = terminal_buffer[(i + 1 ) * VGA_WIDTH + m];
         }
     }
 }
@@ -88,9 +88,14 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
 
 void terminal_putchar(char c) {
 	
+	terminal_column += 1;
 	if (++terminal_column == VGA_WIDTH)
 	{
 		terminal_column = 0;
+		if (++terminal_row == VGA_HEIGHT)
+		{
+			terminal_scroll();
+		}
 	}
 
 	if (c == '\n')
@@ -117,7 +122,5 @@ extern "C"
 void kernel_main(void) {
 	terminal_initialize();
 	terminal_setcolor(VGA_COLOR_WHITE);
-	data = "Hello world!\nWololol\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n";
-	terminal_writestring(data);
-	terminal_scroll(data);
-}i
+	terminal_writestring("Hello world!\nWololol\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n");
+}
